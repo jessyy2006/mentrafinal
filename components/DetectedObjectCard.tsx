@@ -2,7 +2,7 @@ import { motion } from 'motion/react';
 import { Project } from '../types/project';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
-import { Clock, Package, Eye } from 'lucide-react';
+import { Package, Eye } from 'lucide-react';
 import { ImageWithFallback } from './figma/ImageWithFallback';
 interface DetectedObjectCardProps {
   project: Project;
@@ -63,16 +63,12 @@ export function DetectedObjectCard({ project, onStartInstructions }: DetectedObj
               </motion.p>
               
               {/* Stats */}
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.8 }}
                 className="flex items-center justify-center landscape:justify-start gap-4 text-sm text-muted-foreground"
               >
-                <div className="flex items-center gap-1">
-                  <Clock className="w-4 h-4" />
-                  {project.totalTime}
-                </div>
                 <div className="flex items-center gap-1">
                   <Package className="w-4 h-4" />
                   {project.steps.length} steps
