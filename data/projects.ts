@@ -24,7 +24,13 @@ export const currentProject: Project = {
       imageUrl:
         "https://hackmit25.s3.amazonaws.com/projects/492490502940-step-1.jpg",
       estimatedTime: "20 minutes",
-      materials: ["Side panels", "Top shelf", "Bottom shelf", "Cam locks", "Screws"],
+      materials: [
+        "Side panels",
+        "Top shelf",
+        "Bottom shelf",
+        "Cam locks",
+        "Screws",
+      ],
       tools: ["Screwdriver", "Allen wrench"],
     },
     {
@@ -77,8 +83,7 @@ export const currentProject: Project = {
     {
       id: 5,
       title: "Secure bookcase to wall",
-      description:
-        "Attach the bookcase to the wall to prevent tipping.",
+      description: "Attach the bookcase to the wall to prevent tipping.",
       instructions: [
         "Locate wall stud locations",
         "Drill pilot holes",
@@ -93,3 +98,5 @@ export const currentProject: Project = {
     },
   ],
 };
+
+// replace amazon link w this: https://hackmit25.s3.us-east-1.amazonaws.com/informationlive.json

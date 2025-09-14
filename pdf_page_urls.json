@@ -1,0 +1,32 @@
+{
+  "1": {
+    "direct": "https://salsify-ecdn.com/files/e62c7fb40d81f5972267e56bfabeef77.pdf#page=14",
+    "pdfjs": "https://mozilla.github.io/pdf.js/web/viewer.html?file=https://salsify-ecdn.com/files/e62c7fb40d81f5972267e56bfabeef77.pdf#page=14",
+    "google": "https://docs.google.com/viewer?url=https://salsify-ecdn.com/files/e62c7fb40d81f5972267e56bfabeef77.pdf&embedded=true#:0.page.14",
+    "page": 14
+  },
+  "2": {
+    "direct": "https://salsify-ecdn.com/files/e62c7fb40d81f5972267e56bfabeef77.pdf#page=23",
+    "pdfjs": "https://mozilla.github.io/pdf.js/web/viewer.html?file=https://salsify-ecdn.com/files/e62c7fb40d81f5972267e56bfabeef77.pdf#page=23",
+    "google": "https://docs.google.com/viewer?url=https://salsify-ecdn.com/files/e62c7fb40d81f5972267e56bfabeef77.pdf&embedded=true#:0.page.23",
+    "page": 23
+  },
+  "3": {
+    "direct": "https://salsify-ecdn.com/files/e62c7fb40d81f5972267e56bfabeef77.pdf#page=15",
+    "pdfjs": "https://mozilla.github.io/pdf.js/web/viewer.html?file=https://salsify-ecdn.com/files/e62c7fb40d81f5972267e56bfabeef77.pdf#page=15",
+    "google": "https://docs.google.com/viewer?url=https://salsify-ecdn.com/files/e62c7fb40d81f5972267e56bfabeef77.pdf&embedded=true#:0.page.15",
+    "page": 15
+  },
+  "4": {
+    "direct": "https://salsify-ecdn.com/files/e62c7fb40d81f5972267e56bfabeef77.pdf#page=19",
+    "pdfjs": "https://mozilla.github.io/pdf.js/web/viewer.html?file=https://salsify-ecdn.com/files/e62c7fb40d81f5972267e56bfabeef77.pdf#page=19",
+    "google": "https://docs.google.com/viewer?url=https://salsify-ecdn.com/files/e62c7fb40d81f5972267e56bfabeef77.pdf&embedded=true#:0.page.19",
+    "page": 19
+  },
+  "5": {
+    "direct": "https://salsify-ecdn.com/files/e62c7fb40d81f5972267e56bfabeef77.pdf#page=20",
+    "pdfjs": "https://mozilla.github.io/pdf.js/web/viewer.html?file=https://salsify-ecdn.com/files/e62c7fb40d81f5972267e56bfabeef77.pdf#page=20",
+    "google": "https://docs.google.com/viewer?url=https://salsify-ecdn.com/files/e62c7fb40d81f5972267e56bfabeef77.pdf&embedded=true#:0.page.20",
+    "page": 20
+  }
+}
