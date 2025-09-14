@@ -80,7 +80,7 @@ export function DetectedObjectCard({ project, onStartInstructions }: DetectedObj
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.5, delay: 1 }}
-                className="bg-primary/5 rounded-lg p-3"
+                className="bg-primary/5 rounded-lg p-3 border border-primary"
               >
                 <p className="text-sm text-primary">
                   📱 Tap to Start
