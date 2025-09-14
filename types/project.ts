@@ -18,12 +18,3 @@ export interface Project {
   steps: Step[];
   thumbnailUrl: string;
 }
-
-export interface ProjectSequence {
-  id: string;
-  title: string;
-  description: string;
-  projects: Project[];
-  thumbnailUrl: string;
-  totalEstimatedTime: string;
-}
