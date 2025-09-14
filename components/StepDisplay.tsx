@@ -2,7 +2,7 @@ import { Step } from '../types/project';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
 import { Package, Wrench } from 'lucide-react';
-import { StepImageDisplay } from './StepImageDisplay';
+import { GenAIStepImage } from './GenAIStepImage';
 
 interface StepDisplayProps {
   step: Step;
@@ -30,10 +30,12 @@ export function StepDisplay({ step, stepNumber, totalSteps }: StepDisplayProps) 
         <div className="grid grid-cols-1 landscape:grid-cols-2 gap-2 sm:gap-3">
           <div className="landscape:order-1">
             <div className="aspect-video rounded-lg overflow-hidden relative bg-gray-50">
-              <StepImageDisplay
+              <GenAIStepImage
                 stepNumber={stepNumber}
                 stepTitle={step.title}
-                fallbackUrl={step.imageUrl}
+                stepDescription={step.description}
+                materials={step.materials}
+                tools={step.tools}
                 className="w-full h-full object-cover"
               />
             </div>
