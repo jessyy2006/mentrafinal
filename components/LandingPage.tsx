@@ -6,9 +6,10 @@ import { Card, CardContent } from './ui/card';
 interface LandingPageProps {
   hasDetectedObject: boolean;
   onSimulateDetection: () => void;
+  isPolling?: boolean;
 }
 
-export function LandingPage({ hasDetectedObject, onSimulateDetection }: LandingPageProps) {
+export function LandingPage({ hasDetectedObject, onSimulateDetection, isPolling = false }: LandingPageProps) {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-6 py-8 landscape:py-4">
       {/* Main Content */}
@@ -169,7 +170,16 @@ export function LandingPage({ hasDetectedObject, onSimulateDetection }: LandingP
                 className="text-center space-y-1"
               >
                 <p className="font-medium landscape:text-sm text-[14px]">Scanning for projects...</p>
-
+                {isPolling && (
+                  <motion.p
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: [0.5, 1, 0.5] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                    className="text-xs text-muted-foreground"
+                  >
+                    Checking for new barcodes...
+                  </motion.p>
+                )}
               </motion.div>
             )}
           </div>

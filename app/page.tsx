@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Project } from "@/types/project";
 import { DynamicProjectLoader } from "@/components/DynamicProjectLoader";
 import { fetchProjectData } from "@/lib/fetch-project-data";
@@ -21,6 +21,8 @@ export default function Home() {
   const [detectedProject, setDetectedProject] = useState<Project | null>(null);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [isReplaying, setIsReplaying] = useState(false);
+  const [isPolling, setIsPolling] = useState(true);
+  const [lastBarcode, setLastBarcode] = useState<string | null>(null);
 
   const handleSimulateDetection = async () => {
     // Fetch live project data from S3
@@ -147,7 +149,56 @@ export default function Home() {
     setAppState("landing");
     setDetectedProject(null);
     setCurrentStepIndex(0);
+    setIsPolling(true); // Resume polling for new items
   };
+
+  // Auto-detection polling effect
+  useEffect(() => {
+    if (!isPolling || appState !== "landing") return;
+
+    const checkForNewProject = async () => {
+      try {
+        const liveData = await fetchProjectData();
+        if (liveData && liveData.barcode !== lastBarcode) {
+          // New barcode detected!
+          setLastBarcode(liveData.barcode);
+
+          const project: Project = {
+            id: liveData.project.id || liveData.barcode,
+            title: liveData.product_title,
+            description: liveData.project.name || `Assemble ${liveData.product_title}`,
+            difficulty: 'Beginner',
+            totalTime: `${liveData.project.totalSteps * 15} minutes`,
+            thumbnailUrl: liveData.thumbnail_url || 'https://via.placeholder.com/800x600',
+            steps: liveData.project.steps.map((step: any) => ({
+              id: step.id,
+              title: step.title,
+              description: step.description,
+              instructions: step.details || [],
+              imageUrl: liveData.pdf_url || '',
+              estimatedTime: step.estimated_time || `${15} minutes`,
+              materials: step.materials || extractMaterialsFromDetails(step.details),
+              tools: step.tools || extractToolsFromDetails(step.details),
+            }))
+          };
+
+          setDetectedProject(project);
+          setAppState("detected");
+          setIsPolling(false); // Stop polling once detected
+        }
+      } catch (error) {
+        console.error('Polling error:', error);
+      }
+    };
+
+    // Poll every 2 seconds
+    const interval = setInterval(checkForNewProject, 2000);
+
+    // Check immediately on mount
+    checkForNewProject();
+
+    return () => clearInterval(interval);
+  }, [isPolling, appState, lastBarcode]);
 
   return (
     <div className="min-h-screen bg-background px-[0px] p-[0px] mx-[0px] m-[0px]">
@@ -164,6 +215,7 @@ export default function Home() {
               <LandingPage
                 hasDetectedObject={false}
                 onSimulateDetection={handleSimulateDetection}
+                isPolling={isPolling}
               />
             </motion.div>
           )}
