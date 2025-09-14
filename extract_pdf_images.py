@@ -99,7 +99,7 @@ def update_project_images(pdf_path, json_url):
 def main():
     # Configuration
     PDF_PATH = "/path/to/assembly_instructions.pdf"  # Update with actual PDF path
-    JSON_URL = "https://hackmit25.s3.amazonaws.com/projects/492490502940-1757823796974.json"
+    JSON_URL = "https://hackmit25.s3.us-east-1.amazonaws.com/informationlive.json"
 
     # Check if PDF exists
     if not Path(PDF_PATH).exists():

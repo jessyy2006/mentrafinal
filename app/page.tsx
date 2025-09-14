@@ -2,8 +2,9 @@
 
 import React from "react";
 import { useState } from "react";
-import { currentProject } from "@/data/projects";
 import { Project } from "@/types/project";
+import { DynamicProjectLoader } from "@/components/DynamicProjectLoader";
+import { fetchProjectData } from "@/lib/fetch-project-data";
 import { LandingPage } from "@/components/LandingPage";
 import { DetectedObjectCard } from "@/components/DetectedObjectCard";
 import { StepDisplay } from "@/components/StepDisplay";
@@ -21,10 +22,61 @@ export default function Home() {
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [isReplaying, setIsReplaying] = useState(false);
 
-  const handleSimulateDetection = () => {
-    // Simulate detecting a project for demo purposes
-    setDetectedProject(currentProject);
-    setAppState("detected");
+  const handleSimulateDetection = async () => {
+    // Fetch live project data from S3
+    try {
+      const liveData = await fetchProjectData();
+      if (liveData) {
+        // Transform the live data to match our Project interface
+        const project: Project = {
+          id: liveData.project.id || 'bookcase',
+          title: liveData.product_title || liveData.project.name,
+          description: `Assemble your ${liveData.product_title}`,
+          difficulty: 'Beginner',
+          totalTime: '1-2 hours',
+          thumbnailUrl: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64',
+          steps: liveData.project.steps.map((step: any) => ({
+            id: step.id,
+            title: step.title,
+            description: step.description,
+            instructions: step.details || [],
+            imageUrl: `https://hackmit25.s3.amazonaws.com/bookcase-step-${step.id}.jpg`,
+            estimatedTime: `${10 + (step.id - 1) * 5} minutes`,
+            materials: getStepMaterials(step.id),
+            tools: getStepTools(step.id),
+          }))
+        };
+        setDetectedProject(project);
+        setAppState("detected");
+      }
+    } catch (error) {
+      console.error('Error fetching project data:', error);
+      // Fallback to a default project if fetch fails
+      setAppState("detected");
+    }
+  };
+
+  // Helper functions for materials and tools
+  const getStepMaterials = (stepId: number): string[] => {
+    const materialsMap: { [key: number]: string[] } = {
+      1: ["Side panels", "Top shelf", "Bottom shelf", "Cam locks", "Screws"],
+      2: ["Middle shelf", "Cam locks", "Screws"],
+      3: ["Back panel", "Screws"],
+      4: ["Leveling feet"],
+      5: ["Wall anchors", "Screws"],
+    };
+    return materialsMap[stepId] || [];
+  };
+
+  const getStepTools = (stepId: number): string[] => {
+    const toolsMap: { [key: number]: string[] } = {
+      1: ["Screwdriver", "Allen wrench"],
+      2: ["Screwdriver", "Level"],
+      3: ["Screwdriver", "Measuring tape"],
+      4: ["Screwdriver"],
+      5: ["Drill", "Stud finder", "Screwdriver"],
+    };
+    return toolsMap[stepId] || [];
   };
 
   const handleStartInstructions = () => {

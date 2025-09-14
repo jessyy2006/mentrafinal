@@ -18,7 +18,7 @@ genai.configure(api_key=GEMINI_API_KEY)
 PDF_URL = "https://salsify-ecdn.com/files/e62c7fb40d81f5972267e56bfabeef77.pdf"
 
 # S3 project data
-PROJECT_DATA_URL = "https://hackmit25.s3.amazonaws.com/projects/492490502940-1757823796974.json"
+PROJECT_DATA_URL = "https://hackmit25.s3.us-east-1.amazonaws.com/informationlive.json"
 
 def download_pdf():
     """Download the PDF file"""
