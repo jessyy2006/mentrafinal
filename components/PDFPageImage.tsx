@@ -8,13 +8,14 @@ interface PDFPageImageProps {
   className?: string;
 }
 
-// Map steps to actual PDF pages based on Gemini analysis
+// Map steps to actual PDF pages
+// For LEGO instructions, pages would be different
 const STEP_TO_PDF_PAGE: { [key: number]: number } = {
-  1: 14,  // Assemble side panels
-  2: 23,  // Attach middle shelf
-  3: 15,  // Install back panel
-  4: 19,  // Attach levelers
-  5: 20,  // Secure to wall
+  1: 1,  // Assemble the main body
+  2: 2,  // Install the landing gear
+  3: 3,  // Assemble the display stand
+  4: 4,  // Add the finishing touches
+  5: 5,  // Extra step if needed
 };
 
 export function PDFPageImage({
@@ -25,35 +26,37 @@ export function PDFPageImage({
   const [imageUrl, setImageUrl] = useState<string>('');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [pdfUrl, setPdfUrl] = useState<string>('');
 
-  const pdfUrl = 'https://salsify-ecdn.com/files/e62c7fb40d81f5972267e56bfabeef77.pdf';
+  // Default to bookcase PDF, but will be updated from live data
+  const defaultPdfUrl = 'https://salsify-ecdn.com/files/e62c7fb40d81f5972267e56bfabeef77.pdf';
   const pageNumber = STEP_TO_PDF_PAGE[stepNumber] || 1;
 
   useEffect(() => {
-    setIsLoading(true);
-    setError(false);
+    // Fetch the PDF URL from live data
+    const fetchPdfUrl = async () => {
+      setIsLoading(true);
+      setError(false);
 
-    // Use a PDF to image conversion service
-    // Option 1: Use pdf2image service
-    const pdf2imageUrl = `https://api.pdf2image.com/v1/convert?url=${encodeURIComponent(pdfUrl)}&page=${pageNumber}`;
+      try {
+        const response = await fetch('/api/project-data');
+        if (response.ok) {
+          const data = await response.json();
+          const fetchedPdfUrl = data.pdf_url || defaultPdfUrl;
+          setPdfUrl(fetchedPdfUrl);
+        } else {
+          setPdfUrl(defaultPdfUrl);
+        }
+      } catch (err) {
+        console.error('Error fetching PDF URL:', err);
+        setPdfUrl(defaultPdfUrl);
+      }
 
-    // Option 2: Use pdfcrowd service (more reliable)
-    const pdfcrowdUrl = `https://pdfcrowd.com/api/pdf-to-image/?url=${encodeURIComponent(pdfUrl)}&page=${pageNumber}`;
+      setIsLoading(false);
+    };
 
-    // Option 3: Use our own API endpoint that converts PDF to image
-    const apiUrl = `/api/pdf-to-image?url=${encodeURIComponent(pdfUrl)}&page=${pageNumber}`;
-
-    // For now, use a direct screenshot service
-    const screenshotUrl = `https://api.screenshotmachine.com?key=YOUR_KEY&url=${encodeURIComponent(pdfUrl + '#page=' + pageNumber)}&dimension=1024x768`;
-
-    // Actual working solution: Use the PDF directly in an img tag with page fragment
-    // Some browsers support this
-    const directPdfPageUrl = `${pdfUrl}#page=${pageNumber}`;
-
-    // Set the image URL
-    setImageUrl(directPdfPageUrl);
-    setIsLoading(false);
-  }, [stepNumber, pageNumber]);
+    fetchPdfUrl();
+  }, [stepNumber, pageNumber, defaultPdfUrl]);
 
   if (isLoading) {
     return (
@@ -65,7 +68,31 @@ export function PDFPageImage({
     );
   }
 
-  // Since browsers don't support PDF in img tags, we need to use object or iframe
+  // Check if PDF URL is a LEGO PDF - if so, show a placeholder instead
+  const isLegoPdf = pdfUrl && pdfUrl.includes('lego.com');
+
+  if (isLegoPdf) {
+    // For LEGO, show a placeholder since the PDF is huge
+    return (
+      <div className="w-full h-full flex flex-col items-center justify-center bg-gray-50 p-8">
+        <div className="text-center space-y-4">
+          <div className="text-6xl">🧱</div>
+          <h3 className="text-xl font-semibold">LEGO Building Instructions</h3>
+          <p className="text-gray-600">Step {stepNumber}: {stepTitle}</p>
+          <a
+            href={`${pdfUrl}#page=${pageNumber}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          >
+            View Instructions PDF
+          </a>
+        </div>
+      </div>
+    );
+  }
+
+  // For non-LEGO PDFs, embed the actual PDF
   return (
     <div className="w-full h-full relative bg-white">
       <object

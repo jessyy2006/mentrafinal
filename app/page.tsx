@@ -40,10 +40,10 @@ export default function Home() {
             title: step.title,
             description: step.description,
             instructions: step.details || [],
-            imageUrl: `https://hackmit25.s3.amazonaws.com/bookcase-step-${step.id}.jpg`,
+            imageUrl: liveData.pdf_url || `https://hackmit25.s3.amazonaws.com/step-${step.id}.jpg`,
             estimatedTime: `${10 + (step.id - 1) * 5} minutes`,
-            materials: getStepMaterials(step.id),
-            tools: getStepTools(step.id),
+            materials: getStepMaterials(step.id, liveData.product_title),
+            tools: getStepTools(step.id, liveData.product_title),
           }))
         };
         setDetectedProject(project);
@@ -56,8 +56,20 @@ export default function Home() {
     }
   };
 
-  // Helper functions for materials and tools
-  const getStepMaterials = (stepId: number): string[] => {
+  // Helper functions for materials and tools - dynamic based on product
+  const getStepMaterials = (stepId: number, productTitle?: string): string[] => {
+    // Check if it's LEGO
+    if (productTitle && productTitle.toLowerCase().includes('lego')) {
+      const legoMaterialsMap: { [key: number]: string[] } = {
+        1: ["LEGO bricks", "Cockpit piece", "Wing pieces", "Stabilizers"],
+        2: ["Landing gear legs", "Landing gear feet", "Connectors"],
+        3: ["Display stand base", "Vertical support", "Base plate"],
+        4: ["Cockpit canopy", "Detail pieces", "Stickers"],
+      };
+      return legoMaterialsMap[stepId] || [];
+    }
+
+    // Default to bookcase materials
     const materialsMap: { [key: number]: string[] } = {
       1: ["Side panels", "Top shelf", "Bottom shelf", "Cam locks", "Screws"],
       2: ["Middle shelf", "Cam locks", "Screws"],
@@ -68,7 +80,14 @@ export default function Home() {
     return materialsMap[stepId] || [];
   };
 
-  const getStepTools = (stepId: number): string[] => {
+  const getStepTools = (stepId: number, productTitle?: string): string[] => {
+    // Check if it's LEGO
+    if (productTitle && productTitle.toLowerCase().includes('lego')) {
+      // LEGO doesn't need tools
+      return [];
+    }
+
+    // Default to bookcase tools
     const toolsMap: { [key: number]: string[] } = {
       1: ["Screwdriver", "Allen wrench"],
       2: ["Screwdriver", "Level"],
