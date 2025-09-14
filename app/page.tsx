@@ -2,8 +2,8 @@
 
 import React from "react";
 import { useState } from "react";
-import { projectSequences } from "@/data/projects";
-import { Project, ProjectSequence } from "@/types/project";
+import { currentProject } from "@/data/projects";
+import { Project } from "@/types/project";
 import { LandingPage } from "@/components/LandingPage";
 import { DetectedObjectCard } from "@/components/DetectedObjectCard";
 import { StepDisplay } from "@/components/StepDisplay";
@@ -17,22 +17,13 @@ type AppState = "landing" | "detected" | "instructions" | "completed";
 
 export default function Home() {
   const [appState, setAppState] = useState<AppState>("landing");
-  const [detectedSequence, setDetectedSequence] =
-    useState<ProjectSequence | null>(null);
-  const [currentProjectIndex, setCurrentProjectIndex] = useState(0);
+  const [detectedProject, setDetectedProject] = useState<Project | null>(null);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [isReplaying, setIsReplaying] = useState(false);
 
-  // Get current project from sequence
-  const currentProject =
-    detectedSequence?.projects[currentProjectIndex] || null;
-
   const handleSimulateDetection = () => {
-    // Simulate detecting a project sequence for demo purposes
-    const randomSequence =
-      projectSequences[Math.floor(Math.random() * projectSequences.length)];
-    setDetectedSequence(randomSequence);
-    setCurrentProjectIndex(0);
+    // Simulate detecting a project for demo purposes
+    setDetectedProject(currentProject);
     setAppState("detected");
   };
 
@@ -48,17 +39,16 @@ export default function Home() {
 
   const handleBackToLanding = () => {
     setAppState("landing");
-    setDetectedSequence(null);
-    setCurrentProjectIndex(0);
+    setDetectedProject(null);
     setCurrentStepIndex(0);
   };
 
   const handleNextStep = () => {
-    if (currentProject) {
-      if (currentStepIndex < currentProject.steps.length - 1) {
+    if (detectedProject) {
+      if (currentStepIndex < detectedProject.steps.length - 1) {
         setCurrentStepIndex(currentStepIndex + 1);
       } else {
-        // Current project completed - go to completion page
+        // Project completed - go to completion page
         setAppState("completed");
       }
     }
@@ -77,30 +67,19 @@ export default function Home() {
 
   const handleContinueBuilding = () => {
     // Return to the last step for review/modifications
-    setCurrentStepIndex(currentProject ? currentProject.steps.length - 1 : 0);
+    setCurrentStepIndex(detectedProject ? detectedProject.steps.length - 1 : 0);
     setAppState("instructions");
   };
 
   const handleNextProject = () => {
-    if (
-      detectedSequence &&
-      currentProjectIndex < detectedSequence.projects.length - 1
-    ) {
-      // Move to next project in sequence
-      setCurrentProjectIndex(currentProjectIndex + 1);
-      setCurrentStepIndex(0);
-      setAppState("detected");
-    } else {
-      // No more projects in sequence - go back to landing
-      handleDetectNext();
-    }
+    // No more projects - go back to landing
+    handleDetectNext();
   };
 
   const handleDetectNext = () => {
     // Reset everything and go back to landing for next detection
     setAppState("landing");
-    setDetectedSequence(null);
-    setCurrentProjectIndex(0);
+    setDetectedProject(null);
     setCurrentStepIndex(0);
   };
 
@@ -123,7 +102,7 @@ export default function Home() {
             </motion.div>
           )}
 
-          {appState === "detected" && currentProject && detectedSequence && (
+          {appState === "detected" && detectedProject && (
             <motion.div
               key="detected"
               initial={{ opacity: 0, y: 20 }}
@@ -171,7 +150,7 @@ export default function Home() {
                 className="w-full max-w-md landscape:max-w-lg"
               >
                 <DetectedObjectCard
-                  project={currentProject}
+                  project={detectedProject}
                   onStartInstructions={handleStartInstructions}
                 />
               </motion.div>
@@ -189,7 +168,7 @@ export default function Home() {
             </motion.div>
           )}
 
-          {appState === "instructions" && currentProject && (
+          {appState === "instructions" && detectedProject && (
             <motion.div
               key="instructions"
               initial={{ opacity: 0, y: 20 }}
@@ -200,17 +179,17 @@ export default function Home() {
             >
               <ProgressIndicator
                 currentStep={currentStepIndex + 1}
-                totalSteps={currentProject.steps.length}
-                projectTitle={currentProject.title}
+                totalSteps={detectedProject.steps.length}
+                projectTitle={detectedProject.title}
                 nextStep={
-                  currentStepIndex < currentProject.steps.length - 1
-                    ? currentProject.steps[currentStepIndex + 1]
+                  currentStepIndex < detectedProject.steps.length - 1
+                    ? detectedProject.steps[currentStepIndex + 1]
                     : null
                 }
               />
 
               <motion.div
-                key={`${currentProject.id}-${currentStepIndex}-${
+                key={`${detectedProject.id}-${currentStepIndex}-${
                   isReplaying ? "replay" : "normal"
                 }`}
                 initial={{ opacity: 0, scale: 0.95 }}
@@ -218,15 +197,15 @@ export default function Home() {
                 transition={{ duration: 0.4 }}
               >
                 <StepDisplay
-                  step={currentProject.steps[currentStepIndex]}
+                  step={detectedProject.steps[currentStepIndex]}
                   stepNumber={currentStepIndex + 1}
-                  totalSteps={currentProject.steps.length}
+                  totalSteps={detectedProject.steps.length}
                 />
               </motion.div>
 
               <StepNavigation
                 currentStep={currentStepIndex + 1}
-                totalSteps={currentProject.steps.length}
+                totalSteps={detectedProject.steps.length}
                 onPrevious={handlePreviousStep}
                 onNext={handleNextStep}
                 onReplay={handleReplayStep}
@@ -235,7 +214,7 @@ export default function Home() {
             </motion.div>
           )}
 
-          {appState === "completed" && currentProject && detectedSequence && (
+          {appState === "completed" && detectedProject && (
             <motion.div
               key="completed"
               initial={{ opacity: 0, scale: 0.9 }}
@@ -244,21 +223,15 @@ export default function Home() {
               transition={{ duration: 0.6 }}
             >
               <CompletionPage
-                project={currentProject}
+                project={detectedProject}
                 onContinueBuilding={handleContinueBuilding}
                 onNextProject={handleNextProject}
                 onDetectNext={handleDetectNext}
-                hasNextProject={
-                  currentProjectIndex < detectedSequence.projects.length - 1
-                }
-                nextProject={
-                  currentProjectIndex < detectedSequence.projects.length - 1
-                    ? detectedSequence.projects[currentProjectIndex + 1]
-                    : null
-                }
-                sequenceTitle={detectedSequence.title}
-                projectNumber={currentProjectIndex + 1}
-                totalProjects={detectedSequence.projects.length}
+                hasNextProject={false}
+                nextProject={null}
+                sequenceTitle=""
+                projectNumber={1}
+                totalProjects={1}
               />
             </motion.div>
           )}

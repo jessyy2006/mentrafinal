@@ -20,7 +20,7 @@ export function StepDisplay({ step, stepNumber, totalSteps }: StepDisplayProps) 
               <Badge variant="outline" className="w-fit">Step {stepNumber} of {totalSteps}</Badge>
               <span className="text-base sm:text-lg font-bold text-[20px]">{step.title}</span>
             </CardTitle>
-            <CardDescription className="mt-0">{step.description}</CardDescription>
+            <CardDescription className="mt-2">{step.description}</CardDescription>
           </div>
         </div>
       </CardHeader>
