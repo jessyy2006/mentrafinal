@@ -2,7 +2,7 @@ import { Step } from '../types/project';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
 import { Package, Wrench } from 'lucide-react';
-import { GenAIStepImage } from './GenAIStepImage';
+import { PDFPageImage } from './PDFPageImage';
 
 interface StepDisplayProps {
   step: Step;
@@ -30,13 +30,10 @@ export function StepDisplay({ step, stepNumber, totalSteps }: StepDisplayProps) 
         <div className="grid grid-cols-1 landscape:grid-cols-2 gap-2 sm:gap-3">
           <div className="landscape:order-1">
             <div className="aspect-video rounded-lg overflow-hidden relative bg-gray-50">
-              <GenAIStepImage
+              <PDFPageImage
                 stepNumber={stepNumber}
                 stepTitle={step.title}
-                stepDescription={step.description}
-                materials={step.materials}
-                tools={step.tools}
-                className="w-full h-full object-cover"
+                className="w-full h-full"
               />
             </div>
           </div>
