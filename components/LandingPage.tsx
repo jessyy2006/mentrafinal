@@ -38,7 +38,7 @@ export function LandingPage({ hasDetectedObject, onSimulateDetection }: LandingP
           className="space-y-2 landscape:space-y-1"
         >
           <h1 className="text-[24px] font-bold">Mentra DIY Companion</h1>
-          <p className="text-muted-foreground text-sm landscape:text-xs text-[14px]">
+          <p className="text-muted-foreground text-[14px]">
             Point your glasses at any DIY project to get started
           </p>
         </motion.div>

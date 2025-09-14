@@ -21,7 +21,7 @@ export function ProgressIndicator({
   const isComplete = currentStep === totalSteps;
 
   return (
-    <div className="w-full max-w-6xl space-y-1 my-[4px] mx-[0px] mt-[6px] mr-[0px] mb-[0px] ml-[0px] px-[0px] py-[6px]">
+    <div className="w-full max-w-6xl mx-auto space-y-1 my-[4px] mt-[6px] mr-[0px] mb-[0px] ml-[0px] px-[24px] py-[6px]">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mt-[0px] mr-[0px] mb-[4px] ml-[0px]">
         <div className="flex-1">
           <h2 className="flex items-center gap-1.5 sm:gap-2 text-lg sm:text-xl">
