@@ -115,7 +115,7 @@ export function CompletionPage({
               <Button
                 onClick={onDetectNext}
                 variant="ghost"
-                className="w-full text-[14px] font-medium p-0 h-auto hover:bg-transparent"
+                className="w-full text-[14px] font-bold p-0 h-auto hover:bg-transparent"
               >
                 Detect Another DIY
               </Button>
