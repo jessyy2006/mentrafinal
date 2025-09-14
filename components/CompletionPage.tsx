@@ -108,15 +108,22 @@ export function CompletionPage({
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 1 }}
-          className="mt-8"
+          className="mt-8 pt-4"
         >
-          <Button
-            onClick={onDetectNext}
-            className="text-base landscape:text-sm text-[14px] py-1.5 px-3 h-auto flex items-center gap-2 mx-auto"
-          >
-            <Search className="w-5 landscape:w-4" />
-            Detect Your Next DIY
-          </Button>
+          <Card className="w-full max-w-xs mx-auto cursor-pointer hover:shadow-lg transition-all duration-300 border border-primary/20">
+            <CardContent className="p-4">
+              <Button
+                onClick={onDetectNext}
+                variant="ghost"
+                className="w-full text-[14px] font-medium p-0 h-auto hover:bg-transparent"
+              >
+                Detect Another DIY
+              </Button>
+              <p className="text-xs text-muted-foreground landscape:text-[12px] mt-2 opacity-75 text-[14px]">
+                Scan with your Mentra glasses
+              </p>
+            </CardContent>
+          </Card>
         </motion.div>
       </motion.div>
     </div>

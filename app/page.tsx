@@ -182,7 +182,7 @@ export default function Home() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.8 }}
                 onClick={handleBackToLanding}
-                className="mt-8 landscape:mt-6 text-sm landscape:text-xs text-muted-foreground hover:text-foreground transition-colors"
+                className="mt-8 landscape:mt-6 text-[12px] landscape:text-xs text-muted-foreground hover:text-foreground transition-colors"
               >
                 ← Back to detection
               </motion.button>
