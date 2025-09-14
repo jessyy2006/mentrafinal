@@ -2,7 +2,7 @@ import { Step } from '../types/project';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
 import { Package, Wrench } from 'lucide-react';
-import { ImageWithFallback } from './figma/ImageWithFallback';
+import { StepImageDisplay } from './StepImageDisplay';
 
 interface StepDisplayProps {
   step: Step;
@@ -29,10 +29,11 @@ export function StepDisplay({ step, stepNumber, totalSteps }: StepDisplayProps) 
         {/* Mobile landscape: side by side layout */}
         <div className="grid grid-cols-1 landscape:grid-cols-2 gap-2 sm:gap-3">
           <div className="landscape:order-1">
-            <div className="aspect-video rounded-lg overflow-hidden">
-              <ImageWithFallback 
-                src={step.imageUrl}
-                alt={step.title}
+            <div className="aspect-video rounded-lg overflow-hidden relative bg-gray-50">
+              <StepImageDisplay
+                stepNumber={stepNumber}
+                stepTitle={step.title}
+                fallbackUrl={step.imageUrl}
                 className="w-full h-full object-cover"
               />
             </div>
