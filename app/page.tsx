@@ -27,23 +27,23 @@ export default function Home() {
     try {
       const liveData = await fetchProjectData();
       if (liveData) {
-        // Transform the live data to match our Project interface
+        // Use data exactly as it comes from informationlive.json
         const project: Project = {
-          id: liveData.project.id || 'bookcase',
-          title: liveData.product_title || liveData.project.name,
-          description: `Assemble your ${liveData.product_title}`,
+          id: liveData.project.id || liveData.barcode,
+          title: liveData.product_title,
+          description: liveData.project.name || `Assemble ${liveData.product_title}`,
           difficulty: 'Beginner',
-          totalTime: '1-2 hours',
-          thumbnailUrl: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64',
+          totalTime: `${liveData.project.totalSteps * 15} minutes`,
+          thumbnailUrl: liveData.thumbnail_url || 'https://via.placeholder.com/800x600',
           steps: liveData.project.steps.map((step: any) => ({
             id: step.id,
             title: step.title,
             description: step.description,
             instructions: step.details || [],
-            imageUrl: liveData.pdf_url || `https://hackmit25.s3.amazonaws.com/step-${step.id}.jpg`,
-            estimatedTime: `${10 + (step.id - 1) * 5} minutes`,
-            materials: getStepMaterials(step.id, liveData.product_title),
-            tools: getStepTools(step.id, liveData.product_title),
+            imageUrl: liveData.pdf_url || '',
+            estimatedTime: step.estimated_time || `${15} minutes`,
+            materials: step.materials || extractMaterialsFromDetails(step.details),
+            tools: step.tools || extractToolsFromDetails(step.details),
           }))
         };
         setDetectedProject(project);
@@ -51,51 +51,46 @@ export default function Home() {
       }
     } catch (error) {
       console.error('Error fetching project data:', error);
-      // Fallback to a default project if fetch fails
-      setAppState("detected");
+      alert('Could not fetch project data. Please check the connection.');
     }
   };
 
-  // Helper functions for materials and tools - dynamic based on product
-  const getStepMaterials = (stepId: number, productTitle?: string): string[] => {
-    // Check if it's LEGO
-    if (productTitle && productTitle.toLowerCase().includes('lego')) {
-      const legoMaterialsMap: { [key: number]: string[] } = {
-        1: ["LEGO bricks", "Cockpit piece", "Wing pieces", "Stabilizers"],
-        2: ["Landing gear legs", "Landing gear feet", "Connectors"],
-        3: ["Display stand base", "Vertical support", "Base plate"],
-        4: ["Cockpit canopy", "Detail pieces", "Stickers"],
-      };
-      return legoMaterialsMap[stepId] || [];
-    }
-
-    // Default to bookcase materials
-    const materialsMap: { [key: number]: string[] } = {
-      1: ["Side panels", "Top shelf", "Bottom shelf", "Cam locks", "Screws"],
-      2: ["Middle shelf", "Cam locks", "Screws"],
-      3: ["Back panel", "Screws"],
-      4: ["Leveling feet"],
-      5: ["Wall anchors", "Screws"],
-    };
-    return materialsMap[stepId] || [];
+  // Extract materials and tools from step details
+  const extractMaterialsFromDetails = (details: string[] = []): string[] => {
+    // Try to extract materials from the details text
+    const materials: string[] = [];
+    details.forEach(detail => {
+      // Look for common material patterns
+      if (detail.toLowerCase().includes('panel') ||
+          detail.toLowerCase().includes('shelf') ||
+          detail.toLowerCase().includes('screw') ||
+          detail.toLowerCase().includes('piece') ||
+          detail.toLowerCase().includes('part')) {
+        // Extract the material name
+        const words = detail.split(' ');
+        if (words.length > 0) {
+          materials.push(words.slice(0, 3).join(' '));
+        }
+      }
+    });
+    return materials.length > 0 ? materials : ['Assembly parts'];
   };
 
-  const getStepTools = (stepId: number, productTitle?: string): string[] => {
-    // Check if it's LEGO
-    if (productTitle && productTitle.toLowerCase().includes('lego')) {
-      // LEGO doesn't need tools
-      return [];
-    }
+  const extractToolsFromDetails = (details: string[] = []): string[] => {
+    // Try to extract tools from the details text
+    const tools: string[] = [];
+    const toolKeywords = ['drill', 'screwdriver', 'hammer', 'wrench', 'level', 'measure'];
 
-    // Default to bookcase tools
-    const toolsMap: { [key: number]: string[] } = {
-      1: ["Screwdriver", "Allen wrench"],
-      2: ["Screwdriver", "Level"],
-      3: ["Screwdriver", "Measuring tape"],
-      4: ["Screwdriver"],
-      5: ["Drill", "Stud finder", "Screwdriver"],
-    };
-    return toolsMap[stepId] || [];
+    details.forEach(detail => {
+      toolKeywords.forEach(tool => {
+        if (detail.toLowerCase().includes(tool)) {
+          tools.push(tool.charAt(0).toUpperCase() + tool.slice(1));
+        }
+      });
+    });
+
+    // If no tools mentioned, check if it's a tool-free assembly (like LEGO)
+    return tools.length > 0 ? [...new Set(tools)] : [];
   };
 
   const handleStartInstructions = () => {

@@ -8,12 +8,18 @@ export interface ProjectStep {
   description: string;
   details?: string[];
   tips?: string;
+  materials?: string[];
+  tools?: string[];
+  estimated_time?: string;
+  image_url?: string;
 }
 
 export interface ProjectData {
   barcode: string;
   product_title: string;
   timestamp: string;
+  pdf_url?: string;
+  thumbnail_url?: string;
   project: {
     id: string;
     name: string;
