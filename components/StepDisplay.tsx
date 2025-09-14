@@ -44,7 +44,7 @@ export function StepDisplay({ step, stepNumber, totalSteps }: StepDisplayProps) 
               {(step.materials || step.tools) && (
                 <div className="grid gap-10 sm:gap-12 grid-cols-1 sm:grid-cols-2 text-left">
                   {step.materials && (
-                    <div className="space-y-1.5 sm:space-y-2">
+                    <div className="space-y-1.5 sm:space-y-2 pl-4">
                       <h4 className="flex items-center gap-2 text-sm sm:text-base mt-[0px] mr-[0px] mb-[7px] ml-[0px]">
                         <Package className="w-4 h-4" />
                         Materials Needed
@@ -60,7 +60,7 @@ export function StepDisplay({ step, stepNumber, totalSteps }: StepDisplayProps) 
                   )}
                   
                   {step.tools && (
-                    <div className="space-y-1.5 sm:space-y-2">
+                    <div className="space-y-1.5 sm:space-y-2 pl-4">
                       <h4 className="flex items-center gap-2 text-sm sm:text-base">
                         <Wrench className="w-4 h-4" />
                         Tools Required
