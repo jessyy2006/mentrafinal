@@ -30,12 +30,18 @@ export function DetectedObjectCard({ project, onStartInstructions }: DetectedObj
               transition={{ duration: 0.5, delay: 0.4 }}
               className="w-full landscape:w-1/3 flex-shrink-0"
             >
-              <div className="aspect-video landscape:aspect-square rounded-lg overflow-hidden">
-                <ImageWithFallback
-                  src={project.thumbnailUrl}
-                  alt={project.title}
-                  className="w-full h-full object-cover"
-                />
+              <div className="aspect-video landscape:aspect-square rounded-lg overflow-hidden bg-gradient-to-br from-blue-900 via-cyan-800 to-blue-900">
+                <div className="w-full h-full flex items-center justify-center relative">
+                  <div className="absolute inset-0 bg-black/20"></div>
+                  <div className="relative z-10 text-cyan-400">
+                    <svg viewBox="0 0 200 200" className="w-32 h-32 opacity-50">
+                      <circle cx="100" cy="100" r="80" fill="none" stroke="currentColor" strokeWidth="2" className="animate-pulse"/>
+                      <circle cx="100" cy="100" r="60" fill="none" stroke="currentColor" strokeWidth="1" opacity="0.6"/>
+                      <circle cx="100" cy="100" r="40" fill="none" stroke="currentColor" strokeWidth="1" opacity="0.4"/>
+                      <circle cx="100" cy="100" r="20" fill="none" stroke="currentColor" strokeWidth="1" opacity="0.2"/>
+                    </svg>
+                  </div>
+                </div>
               </div>
             </motion.div>
             
