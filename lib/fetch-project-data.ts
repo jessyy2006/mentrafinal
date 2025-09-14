@@ -25,12 +25,23 @@ export interface ProjectData {
 }
 
 export async function fetchProjectData(): Promise<ProjectData | null> {
-  const PROJECT_DATA_URL = 'https://hackmit25.s3.us-east-1.amazonaws.com/informationlive.json';
+  // Use API route to avoid CORS issues
+  const API_URL = '/api/project-data';
+
+  // Fallback to direct S3 URL if API route fails
+  const S3_URL = 'https://hackmit25.s3.us-east-1.amazonaws.com/informationlive.json';
 
   try {
-    const response = await fetch(PROJECT_DATA_URL);
+    // Try API route first (avoids CORS)
+    const response = await fetch(API_URL);
     if (!response.ok) {
-      throw new Error(`Failed to fetch project data: ${response.status}`);
+      // If API route fails, try direct S3 (will work if CORS is configured)
+      const s3Response = await fetch(S3_URL);
+      if (!s3Response.ok) {
+        throw new Error(`Failed to fetch project data: ${s3Response.status}`);
+      }
+      const data = await s3Response.json();
+      return data;
     }
 
     const data = await response.json();
